@@ -1,7 +1,7 @@
 function populateTodoList(todos) {
   let list = document.getElementById("todo-list");
-
-  todos.map((element) => {
+  list.textContent = "";
+  todos.forEach((element) => {
     const iTrash = document.createElement("i");
     const iTick = document.createElement("i");
     const listOfTodos = document.createElement("li");
@@ -17,6 +17,9 @@ function populateTodoList(todos) {
     listOfTodos.classList =
       "list-group-item d-flex justify-content-between  align-items-center ";
     listOfTodos.innerText = element.task;
+    if (element.completed) {
+      listOfTodos.style.textDecoration = "line-through";
+    }
 
     list.appendChild(listOfTodos);
     listOfTodos.appendChild(span);
@@ -24,11 +27,12 @@ function populateTodoList(todos) {
     span.appendChild(iTrash);
 
     iTick.addEventListener("click", () => {
-      listOfTodos.style.textDecoration = "line-through";
+      element.completed = !element.completed;
+      populateTodoList(todos);
     });
 
     iTrash.addEventListener("click", () => {
-      element.remove();
+      listOfTodos.remove();
     });
   });
 }
@@ -37,9 +41,8 @@ function populateTodoList(todos) {
 // You will want to remove the ones in the current HTML after you have created them using JavaScript
 let todos = [
   { task: "Wash the dishes", completed: false },
-  { task: "Do the shopping", completed: false },
+  { task: "Do the shopping", completed: true },
 ];
-
 populateTodoList(todos);
 
 // This function will take the value of the input field and add it as a new todo to the bottom of the todo list. These new todos will need the completed and delete buttons adding like normal.
@@ -50,6 +53,7 @@ function addNewTodo(event) {
   const newItem = input.value;
   todos.push({ task: newItem, completed: false });
   input.value = "";
+  populateTodoList(todos);
 }
 
 // Advanced challenge: Write a fucntion that checks the todos in the todo list and deletes the completed ones (we can check which ones are completed by seeing if they have the line-through styling applied or not).
